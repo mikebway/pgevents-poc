@@ -1,4 +1,4 @@
-# Demonstration Postgres EventArc Audit Log Event Handler
+# Demonstration EventArc Audit Log Event Handler
 
 This simple Cloud Run container repository does nothing terribly useful, it just demonstrates that Postgres database 
 record inserts and updates can give rise to [GCP EventArc](https://cloud.google.com/eventarc/docs) Pub/Sub events
@@ -13,7 +13,7 @@ The event receiver described in that last link is extremely crude. The [`cloud-e
 GitHub repository demonstrates how to use the EventArc and CloudEvents libraries to do something more sophisticated.
 The [`cloud-events-sdk-eventarc`](https://github.com/salrashid123/cloud-events-sdk-eventarc) code is getting a little
 old and uses some deprecated CloudEvent methods; the [Golang SDK for CloudEvents](https://cloudevents.github.io/sdk-go/)
-documentation straightens some of that out
+documentation straightens some of that out.
 
 
 ## Acknowledgements
