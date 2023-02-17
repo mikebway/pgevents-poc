@@ -9,6 +9,7 @@ import (
 	"cloud.google.com/go/compute/metadata"
 	"cloud.google.com/go/logging"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
+	"github.com/googleapis/google-cloudevents-go/cloud/auditdata"
 )
 
 // TODO: Unit test this code!!!
@@ -138,8 +139,8 @@ func AuditEventReceiver(ctx context.Context, event cloudevents.Event) error {
 	if event.Type() == auditLogEventType {
 
 		// Ask for the protobuf data of the event in GCP Cloud Logging format
-		auditData := &logging.Entry{}
-		if err := event.DataAs(auditData); err != nil {
+		data := &auditdata.LogEntryData{}
+		if err := event.DataAs(data); err != nil {
 
 			// Report that we failed to unpack the audit event data
 			err = fmt.Errorf("failed to render audit data: %w", err)
@@ -148,7 +149,7 @@ func AuditEventReceiver(ctx context.Context, event cloudevents.Event) error {
 		}
 
 		// For the purposes of the POC, just loging the audit event is sufficient
-		logger.Log(logging.Entry{Payload: auditData})
+		logger.Log(logging.Entry{Payload: data})
 
 	} else {
 

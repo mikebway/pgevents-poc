@@ -15,6 +15,21 @@ The [`cloud-events-sdk-eventarc`](https://github.com/salrashid123/cloud-events-s
 old and uses some deprecated CloudEvent methods; the [Golang SDK for CloudEvents](https://cloudevents.github.io/sdk-go/)
 documentation straightens some of that out.
 
+## Defining the EventArc Trigger
+
+Here is a template for the `gcloud` command to define the trigger. Be sure to replace the `pgevents-poc`, `pg-eventing`,
+and `event-source` values with the names that you have chosen for your implementation.
+
+```shell
+gcloud eventarc triggers create pgevents-poc --location=us-central1 \
+  --destination-run-service=pgevents-poc \
+  --destination-run-region=us-central1 \
+  --event-filters="type=google.cloud.audit.log.v1.written" \
+  --event-filters="resourceName=instances/event-source" \
+  --event-filters="serviceName=cloudsql.googleapis.com" \
+  --event-filters="methodName=cloudsql.instances.query" \
+  --service-account=pg-eventing@postgres-eventing.iam.gserviceaccount.com
+```
 
 ## Acknowledgements
 
