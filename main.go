@@ -8,8 +8,8 @@ import (
 
 	"cloud.google.com/go/compute/metadata"
 	"cloud.google.com/go/logging"
+	"cloud.google.com/go/logging/apiv2/loggingpb"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
-	"github.com/googleapis/google-cloudevents-go/cloud/auditdata"
 )
 
 // TODO: Unit test this code!!!
@@ -139,7 +139,7 @@ func AuditEventReceiver(ctx context.Context, event cloudevents.Event) error {
 	if event.Type() == auditLogEventType {
 
 		// Ask for the protobuf data of the event in GCP Cloud Logging format
-		data := &auditdata.LogEntryData{}
+		data := &loggingpb.LogEntry{}
 		if err := event.DataAs(data); err != nil {
 
 			// Report that we failed to unpack the audit event data
