@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
 
 	"cloud.google.com/go/compute/metadata"
 	"cloud.google.com/go/logging"
-	"cloud.google.com/go/logging/apiv2/loggingpb"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 )
 
@@ -138,9 +138,17 @@ func AuditEventReceiver(ctx context.Context, event cloudevents.Event) error {
 	// Confirm that we have been given an event of the type we know how to handle
 	if event.Type() == auditLogEventType {
 
+		// Render the event as JSON text so that we can see all that it contains
+		jsonBytes, err := json.Marshal(event)
+		if err != nil {
+			log.Printf("failed to marshal event to JSON: %v", err)
+		} else {
+			log.Printf("event JSON: %s", string(jsonBytes))
+		}
+
 		// Ask for the protobuf data of the event in GCP Cloud Logging format
-		data := &loggingpb.LogEntry{}
-		if err := event.DataAs(data); err != nil {
+		auditData := &logging.Entry{}
+		if err = event.DataAs(auditData); err != nil {
 
 			// Report that we failed to unpack the audit event data
 			err = fmt.Errorf("failed to render audit data: %w", err)
@@ -149,7 +157,7 @@ func AuditEventReceiver(ctx context.Context, event cloudevents.Event) error {
 		}
 
 		// For the purposes of the POC, just loging the audit event is sufficient
-		logger.Log(logging.Entry{Payload: data})
+		logger.Log(logging.Entry{Payload: auditData})
 
 	} else {
 
